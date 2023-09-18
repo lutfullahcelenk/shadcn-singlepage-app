@@ -1,34 +1,36 @@
-"use client"
-import React from "react";
+"use client";
+import React, { useState } from "react";
+import * as z from "zod";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import {
-    Form,
-    FormControl,
-    FormDescription,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "../ui/form";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import { Form, FormControl, FormField, FormItem, FormMessage } from "../ui/form";
 
 const formSchema = z.object({
-    username: z.string().min(2).max(50),
+    username: z.string().trim().min(5, {
+        message: "Username must be at least 5 characters",
+    }),
+    password: z.string().trim().min(8, {
+        message: "Password must be at least 8 characters.",
+    }),
 });
 
 const UserAuthForm = () => {
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const router = useRouter();
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             username: "",
+            password: "",
         },
     });
 
     function onSubmit(values: z.infer<typeof formSchema>) {
         console.log(values);
+        router.push("/home")
     }
 
     return (
@@ -39,11 +41,27 @@ const UserAuthForm = () => {
                     name="username"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Username</FormLabel>
                             <FormControl>
-                                <Input placeholder="shadcn" {...field} />
+                                <Input placeholder="username" {...field} disabled={isLoading} />
                             </FormControl>
-                            <FormDescription>This is your public display name.</FormDescription>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+
+                <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormControl>
+                                <Input
+                                    placeholder="password"
+                                    type="password"
+                                    {...field}
+                                    disabled={isLoading}
+                                />
+                            </FormControl>
                             <FormMessage />
                         </FormItem>
                     )}
