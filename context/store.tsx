@@ -1,6 +1,6 @@
 "use client";
 
-import { Dispatch, SetStateAction, createContext, useContext, useState } from "react";
+import { Dispatch, SetStateAction, createContext, useContext, useEffect, useState } from "react";
 
 interface ContextProps {
     username: string;
@@ -19,6 +19,11 @@ const GlobalContext = createContext<ContextProps>({
 export const GlobalContextProvider = ({ children }: { children: React.ReactNode }) => {
     const [username, setUserName] = useState("Lutfullah");
     const [isLogin, setIsLogin] = useState(false);
+
+    useEffect(() => {
+        localStorage.setItem("isLogin", JSON.stringify(isLogin));
+        localStorage.setItem("username", username);
+    }, [isLogin, username]);
 
     return (
         <GlobalContext.Provider value={{ isLogin, setIsLogin, username, setUserName }}>
