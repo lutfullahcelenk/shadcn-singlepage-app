@@ -4,9 +4,11 @@ import * as z from "zod";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
-import { Form, FormControl, FormField, FormItem, FormMessage } from "../ui/form";
+import { Button } from "../../ui/button";
+import { Input } from "../../ui/input";
+import { Form, FormControl, FormField, FormItem, FormMessage } from "../../ui/form";
+import { useGlobalContext } from "@/context/store";
+import Spinner from "@/components/icons/Spinner";
 
 const formSchema = z.object({
     username: z.string().trim().min(5, {
@@ -19,6 +21,7 @@ const formSchema = z.object({
 
 const UserAuthForm = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const { username, isLogin, setUserName, setIsLogin } = useGlobalContext();
     const router = useRouter();
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -29,8 +32,12 @@ const UserAuthForm = () => {
     });
 
     function onSubmit(values: z.infer<typeof formSchema>) {
-        console.log(values);
-        router.push("/home")
+        setIsLoading(true);
+        setTimeout(() => {
+            setUserName(values.username);
+            setIsLogin(true);
+            router.push("/home");
+        }, 1000);
     }
 
     return (
@@ -66,7 +73,10 @@ const UserAuthForm = () => {
                         </FormItem>
                     )}
                 />
-                <Button type="submit">Submit</Button>
+                <Button type="submit" className="w-full" disabled={isLoading}>
+                    {isLoading && <Spinner className="mr-2 h-4 w-4 animate-spin" />}
+                    Sign In
+                </Button>
             </form>
         </Form>
     );

@@ -1,4 +1,4 @@
-import UserAuthForm from "@/components/UserAuthForm";
+import UserAuthForm from "@/components/partials/UserAuthForm";
 import React from "react";
 
 const LoginPage = () => {
