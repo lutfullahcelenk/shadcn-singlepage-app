@@ -5,8 +5,8 @@ import { Dispatch, SetStateAction, createContext, useContext, useEffect, useStat
 interface ContextProps {
     username: string;
     setUserName: Dispatch<SetStateAction<string>>;
-    isLogin: boolean;
-    setIsLogin: Dispatch<SetStateAction<boolean>>;
+    isLogin: boolean | undefined;
+    setIsLogin: Dispatch<SetStateAction<any>>;
 }
 
 const GlobalContext = createContext<ContextProps>({
@@ -17,8 +17,11 @@ const GlobalContext = createContext<ContextProps>({
 });
 
 export const GlobalContextProvider = ({ children }: { children: React.ReactNode }) => {
-    const [username, setUserName] = useState("Lutfullah");
-    const [isLogin, setIsLogin] = useState(false);
+    const initUsername = localStorage.getItem("username") || "";
+    const initIsLogin = localStorage.getItem("isLogin") || false;
+
+    const [username, setUserName] = useState(initUsername);
+    const [isLogin, setIsLogin] = useState();
 
     useEffect(() => {
         localStorage.setItem("isLogin", JSON.stringify(isLogin));

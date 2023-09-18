@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useLayoutEffect, useState } from "react";
 import * as z from "zod";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -39,6 +39,12 @@ const UserAuthForm = () => {
             router.push("/home");
         }, 1000);
     }
+
+    useLayoutEffect(() => {
+        if (isLogin) {
+            router.push("/home");
+        }
+    }, [isLogin, router]);
 
     return (
         <Form {...form}>
