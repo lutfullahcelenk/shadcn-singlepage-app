@@ -27,12 +27,12 @@ export default function UserNav() {
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <div className="flex items-center">
-                    <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                        <Avatar className="h-8 w-8">
+                    <Button variant="ghost" className="relative h-8 w-8 rounded-full px-5">
+                        {username}
+                        <Avatar className="h-8 w-8 px-4">
                             <AvatarFallback> {username.slice(0, 2).toUpperCase()} </AvatarFallback>
                         </Avatar>
                     </Button>
-                    :{username}
                 </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56" align="end" forceMount>
