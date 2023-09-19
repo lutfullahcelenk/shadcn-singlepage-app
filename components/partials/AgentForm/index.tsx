@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -23,12 +23,19 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 
 interface AgentFormProps extends React.HTMLAttributes<HTMLDivElement> {
     buttonText: string;
     isEdit: boolean;
     agent: IAgent;
-    // onAgentHandler: (agent: z.infer<typeof formSchema>) => void;
+    onAgentHandler: (agent: z.infer<typeof formSchema>) => void;
 }
 
 const formSchema = z.object({
@@ -41,7 +48,7 @@ const formSchema = z.object({
 });
 
 const AgentForm = (props: AgentFormProps) => {
-    const { buttonText, isEdit, agent } = props;
+    const { buttonText, isEdit, agent, onAgentHandler } = props;
     const [isLoading, setIsLoading] = useState(false);
     const [open, setOpen] = useState(false);
 
@@ -57,10 +64,16 @@ const AgentForm = (props: AgentFormProps) => {
         setIsLoading(true);
         setTimeout(() => {
             setOpen(false);
-            // onAgentHandler({ ...agent, ...values });
+            onAgentHandler({ ...agent, ...values });
             setIsLoading(false);
         }, 1000);
     }
+
+    useEffect(() => {
+        if (!open) {
+            form.reset();
+        }
+    }, [form, open]);
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
@@ -69,7 +82,7 @@ const AgentForm = (props: AgentFormProps) => {
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle>{isEdit ? "EDIT" : "CREATEAGENT"}</DialogTitle>
+                    <DialogTitle>{isEdit ? "EDIT" : "CREATE AGENT"}</DialogTitle>
                 </DialogHeader>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -85,6 +98,33 @@ const AgentForm = (props: AgentFormProps) => {
                                             placeholder="Entry a name"
                                             {...field}
                                         />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="status"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Status</FormLabel>
+                                    <FormControl>
+                                        <Select
+                                            onValueChange={field.onChange}
+                                            defaultValue={field.value}
+                                        >
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select a Status" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                <SelectItem value="Online">ONLINE </SelectItem>
+                                                <SelectItem value="Offline">OFFLINE </SelectItem>
+                                            </SelectContent>
+                                        </Select>
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
