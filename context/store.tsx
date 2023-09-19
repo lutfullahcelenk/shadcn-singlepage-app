@@ -1,11 +1,19 @@
 "use client";
 
-import { Dispatch, SetStateAction, createContext, useContext, useEffect, useState } from "react";
+import {
+    Dispatch,
+    SetStateAction,
+    createContext,
+    useContext,
+    useEffect,
+    useLayoutEffect,
+    useState,
+} from "react";
 
 interface ContextProps {
     username: string;
     setUserName: Dispatch<SetStateAction<string>>;
-    isLogin: boolean | undefined;
+    isLogin: any;
     setIsLogin: Dispatch<SetStateAction<any>>;
 }
 
@@ -17,11 +25,15 @@ const GlobalContext = createContext<ContextProps>({
 });
 
 export const GlobalContextProvider = ({ children }: { children: React.ReactNode }) => {
-    const initUsername = localStorage.getItem("username") || "";
-    const initIsLogin = localStorage.getItem("isLogin") || false;
+    const [isLogin, setIsLogin] = useState(false);
+    const [username, setUserName] = useState("");
 
-    const [username, setUserName] = useState(initUsername);
-    const [isLogin, setIsLogin] = useState();
+    useLayoutEffect(() => {
+        const initIsLogin: any = localStorage.getItem("isLogin") || false;
+        const initUsername: string = localStorage.getItem("username") || "";
+        setIsLogin(JSON.parse(initIsLogin));
+        setUserName(initUsername);
+    }, []);
 
     useEffect(() => {
         localStorage.setItem("isLogin", JSON.stringify(isLogin));
